@@ -3,6 +3,6 @@ import 'reflect-metadata';
 import should = require('should');
 should();
 
-describe('MlclModule', function() {
+describe('MlclHttp', function() {
 
 }); // test end
