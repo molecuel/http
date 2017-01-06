@@ -3,6 +3,8 @@ import 'reflect-metadata';
 import {di, injectable, singleton} from '@molecuel/di';
 import * as Koa from 'koa';
 import * as koarouter from 'koa-router';
+import {init} from '@molecuel/core';
+import {Observable} from '@reactivex/rxjs';
 
 
 /**
@@ -30,6 +32,7 @@ export class MlclHttpMiddleware extends Koa {
 export class MlclHttpCoreRouter extends koarouter {
   constructor() {
     super();
+    this.get('/mlclhttp/health', async ctx => ctx.status = 200);
   }
 }
 
@@ -59,5 +62,27 @@ export class MlclHttp {
   private app: MlclHttpMiddleware;
   constructor(app: MlclHttpMiddleware) {
     this.app = app;
+  }
+
+  @init(70)
+  initRouter() {
+    return Observable.create(y => {
+      let app = di.getInstance('MlclHttpMiddleware');
+      let coreRouter = di.getInstance('MlclHttpCoreRouter');
+      app.use(coreRouter.routes());
+      app.use(coreRouter.allowedMethods());
+      y.next(y);
+      y.complete();
+    });
+  }
+
+  @init(90)
+  initListen() {
+    return Observable.create(y => {
+      let app = di.getInstance('MlclHttpMiddleware');
+      app.listen(3000);
+      y.next(y);
+      y.complete();
+    });
   }
 }

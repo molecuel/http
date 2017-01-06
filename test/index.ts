@@ -2,9 +2,11 @@
 import 'reflect-metadata';
 import assert = require('assert');
 import should =  require('should');
+import supertest = require('supertest');
 import {di} from '@molecuel/di';
 import {MlclCore} from '@molecuel/core';
 import {MlclHttpMiddleware, MlclHttp, MlclHttpCoreRouter, MlclHttpRouter} from '../dist';
+
 should();
 
 describe('MlclCoreInit', function() {
@@ -15,6 +17,10 @@ describe('MlclCoreInit', function() {
     let core: MlclCore = di.getInstance('MlclCore');
     assert(core !== undefined);
     assert(core instanceof MlclCore);
+  });
+  it('should exec init function', async function() {
+    let core: MlclCore = di.getInstance('MlclCore');
+    await core.init();
   });
 });
 
@@ -63,5 +69,15 @@ describe('MlclHttp', function() {
   it('MlclHttp attached middleware should be singleton', function() {
     let mhttp = di.getInstance('MlclHttp');
     assert(mhttp.app === di.getInstance('MlclHttpMiddleware'));
+  });
+  it('should get a reply from the application', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .get('/mlclhttp/health')
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 200);
+      done();
+    });
   });
 });
