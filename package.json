@@ -49,7 +49,9 @@
     "@molecuel/core": "^2.0.0",
     "@molecuel/di": "^0.0.2",
     "@reactivex/rxjs": "^5.0.0-rc.5",
+    "@types/koa-router": "^7.0.21",
     "koa": "v2",
+    "koa-router": "next",
     "reflect-metadata": "^0.1.3"
   },
   "devconfig": {

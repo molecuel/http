@@ -4,7 +4,7 @@ import assert = require('assert');
 import should =  require('should');
 import {di} from '@molecuel/di';
 import {MlclCore} from '@molecuel/core';
-import {MlclHttpMiddleware, MlclHttp} from '../dist';
+import {MlclHttpMiddleware, MlclHttp, MlclHttpCoreRouter, MlclHttpRouter} from '../dist';
 should();
 
 describe('MlclCoreInit', function() {
@@ -26,6 +26,25 @@ describe('MlclHttpMiddleware', function() {
   });
   it('should be a singleton instance', function() {
     assert(di.getInstance('MlclHttpMiddleware') === di.getInstance('MlclHttpMiddleware'));
+  });
+});
+
+describe('MlclHttpCoreRouter', function() {
+  it('should return a MlclHttpCoreRouter instance', function() {
+    let coreRouter = di.getInstance('MlclHttpCoreRouter');
+    assert(coreRouter !== undefined);
+    assert(coreRouter instanceof MlclHttpCoreRouter);
+  });
+  it('should be a singleton instance', function() {
+    assert(di.getInstance('MlclHttpCoreRouter') === di.getInstance('MlclHttpCoreRouter'));
+  });
+});
+
+describe('MlclHttpRouter', function() {
+  it('should return a MlclHttpRouter instance', function() {
+    let router = di.getInstance('MlclHttpRouter');
+    assert(router !== undefined);
+    assert(router instanceof MlclHttpRouter);
   });
 });
 
