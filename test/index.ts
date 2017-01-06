@@ -2,14 +2,14 @@
 import 'reflect-metadata';
 import assert = require('assert');
 import should =  require('should');
-import {di, injectable} from '@molecuel/di';
+import {di} from '@molecuel/di';
 import {MlclCore} from '@molecuel/core';
-import {MlclKoa} from '../dist';
+import {MlclHttpMiddleware, MlclHttp} from '../dist';
 should();
 
 describe('MlclCoreInit', function() {
   it('should bootstrap', function() {
-    di.bootstrap(MlclCore, MlclKoa);
+    di.bootstrap(MlclCore, MlclHttpMiddleware, MlclHttp);
   });
   it('should init molecuel core', function() {
     let core: MlclCore = di.getInstance('MlclCore');
@@ -18,13 +18,31 @@ describe('MlclCoreInit', function() {
   });
 });
 
-describe('MlclKoa', function() {
-  it('should return a MlclKoa instance', function() {
-    let koa = di.getInstance('MlclKoa');
-    assert(koa !== undefined);
-    assert(koa instanceof MlclKoa);
+describe('MlclHttpMiddleware', function() {
+  it('should return a MlclHttpMiddleware instance', function() {
+    let middleware = di.getInstance('MlclHttpMiddleware');
+    assert(middleware !== undefined);
+    assert(middleware instanceof MlclHttpMiddleware);
   });
   it('should be a singleton instance', function() {
-    assert(di.getInstance('MlclKoa') === di.getInstance('MlclKoa'));
+    assert(di.getInstance('MlclHttpMiddleware') === di.getInstance('MlclHttpMiddleware'));
   });
-}); // test end
+});
+
+describe('MlclHttp', function() {
+  it('should return a MlclHttp instance', function() {
+    let mhttp = di.getInstance('MlclHttp');
+    assert(mhttp !== undefined);
+    assert(mhttp instanceof MlclHttp);
+  });
+  it('MlclHttp should automatically attach the middleware', function() {
+    let mhttp = di.getInstance('MlclHttp');
+    assert(mhttp !== undefined);
+    assert(mhttp instanceof MlclHttp);
+    assert(mhttp.app instanceof MlclHttpMiddleware);
+  });
+  it('MlclHttp attached middleware should be singleton', function() {
+    let mhttp = di.getInstance('MlclHttp');
+    assert(mhttp.app === di.getInstance('MlclHttpMiddleware'));
+  });
+});
