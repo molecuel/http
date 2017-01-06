@@ -37,16 +37,19 @@
     "merge2": "^1.0.1",
     "mocha": "*",
     "mocha-lcov-reporter": "^1.2.0",
+    "remap-istanbul": "^0.8.4",
     "should": ">= 0.0.1",
     "tslint": "^4.2.0",
     "tslint-stylish": "^2.1.0-beta",
     "typedoc": "^0.5.1",
-    "typescript": "^2.1.0",
-    "remap-istanbul": "^0.8.4"
+    "typescript": "^2.1.0"
   },
   "dependencies": {
+    "@molecuel/core": "^2.0.0",
     "@molecuel/di": "^0.0.2",
     "@reactivex/rxjs": "^5.0.0-rc.5",
+    "@types/koa": "^2.0.37",
+    "koa": "v2",
     "reflect-metadata": "^0.1.3"
   },
   "devconfig": {
