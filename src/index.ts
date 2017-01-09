@@ -65,6 +65,28 @@ export class MlclHttp {
   }
 
   @init(70)
+  initRoutes() {
+    return Observable.create(y => {
+      let coreRouter = di.getInstance('MlclHttpCoreRouter');
+      let core = di.getInstance('MlclCore');
+      let dataFactories = core.getDataFactories();
+      for(let factory of dataFactories) {
+        let factoryClassInstance = di.getInstance(factory.targetName);
+        if(factory.operation === 'read') {
+          coreRouter.get('/testread', async (ctx) => {
+            console.log('here1');
+            let returnValue = await factoryClassInstance[factory.targetProperty]()();
+            console.log(returnValue);
+            ctx.body = returnValue;
+          });
+        }
+      }
+      y.next(y);
+      y.complete();
+    });
+  }
+
+  @init(80)
   initRouter() {
     return Observable.create(y => {
       let app = di.getInstance('MlclHttpMiddleware');
