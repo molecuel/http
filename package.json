@@ -46,7 +46,7 @@
     "tslint": "^4.2.0",
     "tslint-stylish": "^2.1.0-beta",
     "typedoc": "^0.5.1",
-    "typescript": "^2.1.0"
+    "typescript": "^2.1.5"
   },
   "dependencies": {
     "@molecuel/core": "^2.0.2",
