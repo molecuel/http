@@ -4,7 +4,7 @@ import assert = require('assert');
 import should =  require('should');
 import supertest = require('supertest');
 import {di, injectable} from '@molecuel/di';
-import {MlclCore, dataRead} from '@molecuel/core';
+import {MlclCore, dataRead, mapDataParams, MlclDataParam} from '@molecuel/core';
 import {MlclHttpMiddleware, MlclHttp, MlclHttpCoreRouter, MlclHttpRouter} from '../dist';
 
 should();
@@ -14,11 +14,12 @@ describe('MlclCoreBootStrap', function() {
   before(function() {
     @injectable
     class myCreateTestRoutes {
+      @mapDataParams([
+          new MlclDataParam('myParam', 'id', 'json', 25)
+      ])
       @dataRead()
-      dataReadeTest1() {
-        return async function() {
-          return true;
-        };
+      async dataReadeTest1(id, blab, blub) {
+        return {};
       }
     }
   });

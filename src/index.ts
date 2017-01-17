@@ -74,9 +74,8 @@ export class MlclHttp {
         let factoryClassInstance = di.getInstance(factory.targetName);
         if(factory.operation === 'read') {
           coreRouter.get('/testread', async (ctx) => {
-            console.log('here1');
-            let returnValue = await factoryClassInstance[factory.targetProperty]()();
-            console.log(returnValue);
+            // execute function from dataFactory
+            let returnValue = await factoryClassInstance[factory.targetProperty]();
             ctx.body = returnValue;
           });
         }
