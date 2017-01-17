@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@molecuel/core": "^2.0.2",
-    "@molecuel/di": "^0.0.2",
+    "@molecuel/di": "^0.0.3",
     "@reactivex/rxjs": "^5.0.0-rc.5",
     "koa": "v2",
     "koa-router": "next",
