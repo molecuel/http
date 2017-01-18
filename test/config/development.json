@@ -1,0 +1,14 @@
+{
+  "http": {
+    "security": {
+
+    },
+    "routes": [
+      {
+        "url": "/testread",
+        "class": "myCreateTestRoutes",
+        "property": "dataReadeTest2"
+      }
+    ]
+  }
+}
