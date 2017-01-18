@@ -3,8 +3,8 @@
 
 
 "@molecuel/core@^2.0.2":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.3.tgz#78b4c2722f1775efcad9b18ebe8bc1ed497afec0"
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.4.tgz#72e8256b33139d5aee3bc0d2a5eab3b2b190abae"
   dependencies:
     "@molecuel/di" "^0.0.3"
     "@reactivex/rxjs" "^5.0.0-rc.5"
