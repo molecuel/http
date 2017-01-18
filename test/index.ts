@@ -1,4 +1,5 @@
 'use strict';
+process.env.configpath = './test/config/';
 import 'reflect-metadata';
 import assert = require('assert');
 import should =  require('should');
@@ -19,6 +20,10 @@ describe('MlclCoreBootStrap', function() {
       ])
       @dataRead()
       async dataReadeTest1(id, blab, blub) {
+        return {};
+      }
+      @dataRead()
+      async dataReadeTest2() {
         return {};
       }
     }

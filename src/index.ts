@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import {di, injectable, singleton} from '@molecuel/di';
 import * as Koa from 'koa';
 import * as koarouter from 'koa-router';
-import {init} from '@molecuel/core';
+import {init, MlclConfig, MlclDataFactory} from '@molecuel/core';
 import {Observable} from '@reactivex/rxjs';
-
+import * as _ from 'lodash';
 
 /**
  * @description This is the http middleware it's based on Koa v2
@@ -70,14 +70,29 @@ export class MlclHttp {
       let coreRouter = di.getInstance('MlclHttpCoreRouter');
       let core = di.getInstance('MlclCore');
       let dataFactories = core.getDataFactories();
+      let sortedDataFactories = {};
       for(let factory of dataFactories) {
-        let factoryClassInstance = di.getInstance(factory.targetName);
-        if(factory.operation === 'read') {
-          coreRouter.get('/testread', async (ctx) => {
-            // execute function from dataFactory
-            let returnValue = await factoryClassInstance[factory.targetProperty]();
-            ctx.body = returnValue;
-          });
+        if(!sortedDataFactories[factory.targetName]) {
+          sortedDataFactories[factory.targetName] = {};
+        }
+        sortedDataFactories[factory.targetName][factory.targetProperty] = factory;
+      }
+      let config: MlclConfig = di.getInstance('MlclConfig');
+      let configuredRoutes = config.getConfig('http.routes');
+      for(let route of configuredRoutes) {
+        let fackey = route.class + '.' + route.property;
+        let factory: any = _.get(sortedDataFactories, route.class + '.' + route.property);
+        if(factory) {
+          switch(factory.operation) {
+            case 'read':
+              let factoryClassInstance = di.getInstance(factory.targetName);
+              coreRouter.get(route.url, async (ctx) => {
+                // execute function from dataFactory
+                let returnValue = await factoryClassInstance[factory.targetProperty]();
+                ctx.body = returnValue;
+              });
+              break;
+          }
         }
       }
       y.next(y);
