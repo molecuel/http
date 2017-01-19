@@ -16,11 +16,15 @@ describe('MlclCoreBootStrap', function() {
     @injectable
     class myCreateTestRoutes {
       @mapDataParams([
-          new MlclDataParam('myParam', 'id', 'json', 25)
+          new MlclDataParam('id', 'id', 'integer', 25),
+          new MlclDataParam('large', 'size', 'boolean')
       ])
       @dataRead()
-      async dataReadeTest1(id, blab, blub) {
-        return {};
+      async dataReadeTest1(id, size) {
+        return {
+          id: id,
+          size: size
+        };
       }
       @dataRead()
       async dataReadeTest2() {
@@ -106,9 +110,19 @@ describe('MlclHttp', function() {
     supertest(app.listen())
     .get('/testread')
     .end(function(err: any, res: supertest.Response){
-      console.log(res.status);
       assert(err === null);
       assert(res.status === 200);
+      done();
+    });
+  });
+  it('should get a reply from the test read with parameters and query options', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .get('/testread/111?large=true')
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 200);
+      assert(res.body.id === 111);
       done();
     });
   });

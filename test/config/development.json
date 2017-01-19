@@ -8,6 +8,11 @@
         "url": "/testread",
         "class": "myCreateTestRoutes",
         "property": "dataReadeTest2"
+      },
+      {
+        "url": "/testread/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataReadeTest1"
       }
     ]
   }
