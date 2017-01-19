@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import {di, injectable, singleton} from '@molecuel/di';
 import * as Koa from 'koa';
 import * as koarouter from 'koa-router';
-import {init, MlclConfig, MlclDataFactory} from '@molecuel/core';
+import {init, MlclConfig, MlclDataFactory, MlclCore} from '@molecuel/core';
 import {Observable} from '@reactivex/rxjs';
 import * as _ from 'lodash';
 
@@ -68,7 +68,7 @@ export class MlclHttp {
   initRoutes() {
     return Observable.create(y => {
       let coreRouter = di.getInstance('MlclHttpCoreRouter');
-      let core = di.getInstance('MlclCore');
+      let core: MlclCore = di.getInstance('MlclCore');
       let dataFactories = core.getDataFactories();
       let sortedDataFactories = {};
       for(let factory of dataFactories) {
@@ -88,7 +88,9 @@ export class MlclHttp {
               let factoryClassInstance = di.getInstance(factory.targetName);
               coreRouter.get(route.url, async (ctx) => {
                 // execute function from dataFactory
-                let returnValue = await factoryClassInstance[factory.targetProperty]();
+                let mergedProps = Object.assign({}, ctx.query, ctx.params);
+                let resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+                let returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.body = returnValue;
               });
               break;

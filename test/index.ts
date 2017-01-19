@@ -123,6 +123,7 @@ describe('MlclHttp', function() {
       assert(err === null);
       assert(res.status === 200);
       assert(res.body.id === 111);
+      assert(res.body.size === true);
       done();
     });
   });
