@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@molecuel/core@^2.0.2":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.4.tgz#72e8256b33139d5aee3bc0d2a5eab3b2b190abae"
+"@molecuel/core@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.6.tgz#0640d998a2b46da534cd8b4547d118aeca48dd77"
   dependencies:
     "@molecuel/di" "^0.0.3"
     "@reactivex/rxjs" "^5.0.0-rc.5"
