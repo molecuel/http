@@ -5,7 +5,7 @@ import assert = require('assert');
 import should =  require('should');
 import supertest = require('supertest');
 import {di, injectable} from '@molecuel/di';
-import {MlclCore, dataRead, mapDataParams, MlclDataParam} from '@molecuel/core';
+import {MlclCore, dataRead, dataCreate, mapDataParams, MlclDataParam} from '@molecuel/core';
 import {MlclHttpMiddleware, MlclHttp, MlclHttpCoreRouter, MlclHttpRouter} from '../dist';
 
 should();
@@ -29,6 +29,21 @@ describe('MlclCoreBootStrap', function() {
       @dataRead()
       async dataReadeTest2() {
         return {};
+      }
+      @dataRead('application/rss+xml')
+      async dataReadeTestXml() {
+        return '<xml></<xml>';
+      }
+      @dataCreate()
+      async dataCreateTest1() {
+        return true;
+      }
+       @mapDataParams([
+          new MlclDataParam('id', 'id', 'integer', 25),
+      ])
+      @dataCreate()
+      async dataCreateTest2(id, size) {
+        return true;
       }
     }
   });
@@ -124,6 +139,17 @@ describe('MlclHttp', function() {
       assert(res.status === 200);
       assert(res.body.id === 111);
       assert(res.body.size === true);
+      done();
+    });
+  });
+  it('should get a reply from the test read with RSS XML result type', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .get('/testreadXml')
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 200);
+      assert(res.header['content-type'] === 'application/rss+xml');
       done();
     });
   });

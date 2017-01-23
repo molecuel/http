@@ -13,6 +13,21 @@
         "url": "/testread/:id",
         "class": "myCreateTestRoutes",
         "property": "dataReadeTest1"
+      },
+      {
+        "url": "/testreadXml",
+        "class": "myCreateTestRoutes",
+        "property": "dataReadeTestXml"
+      },
+      {
+        "url": "/testcreate",
+        "class": "myCreateTestRoutes",
+        "property": "dataCreateTest1"
+      },
+      {
+        "url": "/testcreate/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataCreateTest2"
       }
     ]
   }
