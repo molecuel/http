@@ -5,7 +5,7 @@ import assert = require('assert');
 import should =  require('should');
 import supertest = require('supertest');
 import {di, injectable} from '@molecuel/di';
-import {MlclCore, dataRead, dataCreate, mapDataParams, MlclDataParam} from '@molecuel/core';
+import {MlclCore, dataRead, dataCreate, dataUpdate, dataReplace, dataDelete, mapDataParams, MlclDataParam} from '@molecuel/core';
 import {MlclHttpMiddleware, MlclHttp, MlclHttpCoreRouter, MlclHttpRouter} from '../dist';
 
 should();
@@ -35,14 +35,28 @@ describe('MlclCoreBootStrap', function() {
         return '<xml></<xml>';
       }
       @dataCreate()
-      async dataCreateTest1() {
+      async dataCreateTest() {
         return true;
       }
-       @mapDataParams([
-          new MlclDataParam('id', 'id', 'integer', 25),
+      @mapDataParams([
+        new MlclDataParam('id', 'id', 'integer', 25),
       ])
-      @dataCreate()
-      async dataCreateTest2(id, size) {
+      @dataUpdate()
+      async dataUpdateTest(id, size) {
+        return true;
+      }
+      @mapDataParams([
+        new MlclDataParam('id', 'id', 'integer', 25),
+      ])
+      @dataReplace()
+      async dataReplaceTest(id, size) {
+        return true;
+      }
+      @mapDataParams([
+        new MlclDataParam('id', 'id', 'integer', 25),
+      ])
+      @dataDelete()
+      async dataDeleteTest(id, size) {
         return true;
       }
     }
@@ -150,6 +164,49 @@ describe('MlclHttp', function() {
       assert(err === null);
       assert(res.status === 200);
       assert(res.header['content-type'] === 'application/rss+xml');
+      done();
+    });
+  });
+  it('should be able to send a post request to create a object', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .post('/testcreate')
+    .send({testdata: 'mytest'})
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 201);
+      done();
+    });
+  });
+  it('should be able to send a post request to update a object', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .post('/testupdate/myid')
+    .send({testdata: 'mytest'})
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 200);
+      done();
+    });
+  });
+  it('should be able to send a put request to replace a object', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .put('/testreplace/123')
+    .send({testdata: 'mytest'})
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 200);
+      done();
+    });
+  });
+  it('should be able to send a delete request for a object', function(done) {
+    let app = di.getInstance('MlclHttpMiddleware');
+    supertest(app.listen())
+    .delete('/testdelete/123')
+    .end(function(err: any, res: supertest.Response){
+      assert(err === null);
+      assert(res.status === 204);
       done();
     });
   });

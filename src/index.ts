@@ -87,7 +87,6 @@ export class MlclHttp {
 
           switch(factory.operation) {
             case 'create':
-            case 'update':
               coreRouter.post(route.url, async (ctx) => {
                 let mergedProps = Object.assign({}, ctx.query, ctx.params);
                 let resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
@@ -95,6 +94,34 @@ export class MlclHttp {
                 try {
                   let returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                   ctx.status = 201;
+                  // @todo add location?
+                } catch (error) {
+                  ctx.status = 500;
+                };
+              });
+              break;
+            case 'update':
+              coreRouter.post(route.url, async (ctx) => {
+                let mergedProps = Object.assign({}, ctx.query, ctx.params);
+                let resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+                // execute function from dataFactory
+                try {
+                  let returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                  ctx.status = 200;
+                  // @todo add location?
+                } catch (error) {
+                  ctx.status = 500;
+                };
+              });
+              break;
+            case 'replace':
+              coreRouter.put(route.url, async (ctx) => {
+                let mergedProps = Object.assign({}, ctx.query, ctx.params);
+                let resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+                // execute function from dataFactory
+                try {
+                  let returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                  ctx.status = 200;
                   // @todo add location?
                 } catch (error) {
                   ctx.status = 500;

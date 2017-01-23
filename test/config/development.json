@@ -22,12 +22,22 @@
       {
         "url": "/testcreate",
         "class": "myCreateTestRoutes",
-        "property": "dataCreateTest1"
+        "property": "dataCreateTest"
       },
       {
-        "url": "/testcreate/:id",
+        "url": "/testupdate/:id",
         "class": "myCreateTestRoutes",
-        "property": "dataCreateTest2"
+        "property": "dataUpdateTest"
+      },
+      {
+        "url": "/testreplace/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataReplaceTest"
+      },
+       {
+        "url": "/testdelete/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataDeleteTest"
       }
     ]
   }
