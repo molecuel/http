@@ -44,7 +44,7 @@
     "mocha-lcov-reporter": "^1.2.0",
     "remap-istanbul": "^0.8.4",
     "should": ">= 0.0.1",
-    "supertest": "^2.0.1",
+    "supertest": "^3.0.0",
     "tslint": "^4.2.0",
     "tslint-stylish": "^2.1.0-beta",
     "typedoc": "^0.5.1",
