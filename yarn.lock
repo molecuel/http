@@ -3,28 +3,20 @@
 
 
 "@molecuel/core@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.6.tgz#0640d998a2b46da534cd8b4547d118aeca48dd77"
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@molecuel/core/-/core-2.0.10.tgz#95d7a81765ae506cc36b1f2de667f1ccf1a23926"
   dependencies:
-    "@molecuel/di" "^0.0.3"
+    "@molecuel/di" "^0.1.0"
     "@reactivex/rxjs" "^5.0.0-rc.5"
     config "^1.24.0"
     lodash "^4.17.4"
     reflect-metadata "^0.1.3"
     remap-istanbul "^0.8.4"
 
-"@molecuel/di@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@molecuel/di/-/di-0.0.2.tgz#734bdb24b85cbb035ba8d9aa0a02ccf7b4d8bbd8"
+"@molecuel/di@^0.1.0":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@molecuel/di/-/di-0.1.2.tgz#9b844f452f224ae56042749128fd2a76b3bcdbd2"
   dependencies:
-    lodash "^4.13.1"
-    reflect-metadata "^0.1.3"
-
-"@molecuel/di@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@molecuel/di/-/di-0.0.3.tgz#34258121753915d0183e9c6613800be01df974fb"
-  dependencies:
-    "@molecuel/di" "^0.0.2"
     "@reactivex/rxjs" "^5.0.0-rc.5"
     config "^1.24.0"
     reflect-metadata "^0.1.3"
@@ -124,8 +116,8 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.38.tgz#8c188f6e34c2e7c3f1d0127d908d5a36e5a60dc9"
 
 "@types/node@*":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.0.tgz#c081147b109da5f9c57af70571771be97ce9c0ba"
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.1.tgz#858610f58e4d48dd4410145eef9e12c97e3aacfd"
 
 "@types/orchestrator@*":
   version "0.0.30"
@@ -303,12 +295,12 @@ aws4@^1.2.1:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.5.0.tgz#0a29ffb79c31c9e712eeb087e8e7a64b4a56d755"
 
 babel-code-frame@^6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.20.0.tgz#b968f839090f9a8bc6d41938fb96cb84f7387b26"
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.22.0.tgz#027620bee567a88c32561574e7fd0801d33118e4"
   dependencies:
     chalk "^1.1.0"
     esutils "^2.0.2"
-    js-tokens "^2.0.0"
+    js-tokens "^3.0.0"
 
 balanced-match@^0.4.1:
   version "0.4.2"
@@ -1658,9 +1650,9 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
-js-tokens@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-2.0.0.tgz#79903f5563ee778cc1162e6dcf1a0027c97f9cb5"
+js-tokens@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.0.tgz#a2f2a969caae142fb3cd56228358c89366957bd1"
 
 js-yaml@3.6.1, js-yaml@3.x:
   version "3.6.1"

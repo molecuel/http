@@ -13,6 +13,31 @@
         "url": "/testread/:id",
         "class": "myCreateTestRoutes",
         "property": "dataReadeTest1"
+      },
+      {
+        "url": "/testreadXml",
+        "class": "myCreateTestRoutes",
+        "property": "dataReadeTestXml"
+      },
+      {
+        "url": "/testcreate",
+        "class": "myCreateTestRoutes",
+        "property": "dataCreateTest"
+      },
+      {
+        "url": "/testupdate/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataUpdateTest"
+      },
+      {
+        "url": "/testreplace/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataReplaceTest"
+      },
+       {
+        "url": "/testdelete/:id",
+        "class": "myCreateTestRoutes",
+        "property": "dataDeleteTest"
       }
     ]
   }
