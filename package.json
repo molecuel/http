@@ -21,7 +21,7 @@
     "@types/koa-router": "^7.0.21",
     "@types/lodash": "^4.14.42",
     "@types/merge2": "^0.3.29",
-    "@types/mocha": "^2.2.33",
+    "@types/mocha": "^2.2.38",
     "@types/should": "^8.1.30",
     "@types/supertest": "^2.0.0",
     "@types/when": "^2.4.28",
