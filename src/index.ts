@@ -136,7 +136,7 @@ export class MlclHttp {
                 let returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.body = returnValue;
                 if(factory.resultType) {
-                  ctx.response.header['content-type'] = factory.resultType;
+                  ctx.type = factory.resultType;
                 }
               });
               break;

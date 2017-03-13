@@ -161,9 +161,9 @@ describe('MlclHttp', function() {
     supertest(app.listen())
     .get('/testreadXml')
     .end(function(err: any, res: supertest.Response){
-      assert(err === null);
-      assert(res.status === 200);
-      assert(res.header['content-type'] === 'application/rss+xml');
+      should.not.exist(err);
+      should.strictEqual(res.status, 200);
+      should.strictEqual(res.header['content-type'], 'application/rss+xml');
       done();
     });
   });
