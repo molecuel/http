@@ -58,6 +58,9 @@
     "koa-router": "next",
     "reflect-metadata": "^0.1.3"
   },
+  "engines": {
+    "node": ">= 7.6.0"
+  },
   "devconfig": {
     "paths": {
       "testsource": "test/**/*.ts",
