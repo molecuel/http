@@ -51,7 +51,7 @@
     "typescript": "^2.1.5"
   },
   "dependencies": {
-    "@molecuel/core": "^2.0.10",
+    "@molecuel/core": "^2.0.12",
     "@molecuel/di": "^0.2.0",
     "@reactivex/rxjs": "^5.0.0-rc.5",
     "koa": "2.1.0",
