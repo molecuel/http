@@ -54,7 +54,7 @@
     "@molecuel/core": "^2.0.10",
     "@molecuel/di": "^0.2.0",
     "@reactivex/rxjs": "^5.0.0-rc.5",
-    "koa": "2.1.0",
+    "koa": "2.2.0",
     "koa-router": "next",
     "reflect-metadata": "^0.1.3"
   },
