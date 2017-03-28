@@ -6,37 +6,37 @@
     "routes": [
       {
         "url": "/testread",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataReadeTest2"
       },
       {
         "url": "/testread/:id",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataReadeTest1"
       },
       {
         "url": "/testreadXml",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataReadeTestXml"
       },
       {
         "url": "/testcreate",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataCreateTest"
       },
       {
         "url": "/testupdate/:id",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataUpdateTest"
       },
       {
         "url": "/testreplace/:id",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataReplaceTest"
       },
        {
         "url": "/testdelete/:id",
-        "class": "myCreateTestRoutes",
+        "class": "MyCreateTestRoutes",
         "property": "dataDeleteTest"
       }
     ]
