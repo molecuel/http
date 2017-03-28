@@ -7,10 +7,7 @@ import * as assert from "assert";
 import "reflect-metadata";
 import * as should from "should";
 import * as supertest from "supertest";
-import {MlclHttp} from "../dist";
-import {MlclHttpMiddleware} from "../dist/middleware/MlclHttpMiddleware";
-import {MlclHttpCoreRouter} from "../dist/router/MlclHttpCoreRouter";
-import {MlclHttpRouter} from "../dist/router/MlclHttpRouter";
+import {MlclHttp, MlclHttpCoreRouter, MlclHttpMiddleware, MlclHttpRouter} from "../dist";
 
 describe("MlclCoreBootStrap", () => {
   before(() => {
