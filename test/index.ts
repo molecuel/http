@@ -66,19 +66,19 @@ describe("MlclCoreBootStrap", () => {
 
 describe("MlclCoreInit", () => {
   it("should init molecuel core", () => {
-    let core: MlclCore = di.getInstance("MlclCore");
+    const core: MlclCore = di.getInstance("MlclCore");
     assert(core !== undefined);
     assert(core instanceof MlclCore);
   });
   it("should exec init function", async () => {
-    let core: MlclCore = di.getInstance("MlclCore");
+    const core: MlclCore = di.getInstance("MlclCore");
     await core.init();
   });
 });
 
 describe("MlclHttpMiddleware", () => {
   it("should return a MlclHttpMiddleware instance", () => {
-    let middleware = di.getInstance("MlclHttpMiddleware");
+    const middleware = di.getInstance("MlclHttpMiddleware");
     assert(middleware !== undefined);
     assert(middleware instanceof MlclHttpMiddleware);
   });
@@ -89,7 +89,7 @@ describe("MlclHttpMiddleware", () => {
 
 describe("MlclHttpCoreRouter", () => {
   it("should return a MlclHttpCoreRouter instance", () => {
-    let coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
     assert(coreRouter !== undefined);
     assert(coreRouter instanceof MlclHttpCoreRouter);
   });
@@ -100,7 +100,7 @@ describe("MlclHttpCoreRouter", () => {
 
 describe("MlclHttpRouter", () => {
   it("should return a MlclHttpRouter instance", () => {
-    let router = di.getInstance("MlclHttpRouter");
+    const router = di.getInstance("MlclHttpRouter");
     assert(router !== undefined);
     assert(router instanceof MlclHttpRouter);
   });
@@ -108,22 +108,22 @@ describe("MlclHttpRouter", () => {
 
 describe("MlclHttp", () => {
   it("should return a MlclHttp instance", () => {
-    let mhttp = di.getInstance("MlclHttp");
+    const mhttp = di.getInstance("MlclHttp");
     assert(mhttp !== undefined);
     assert(mhttp instanceof MlclHttp);
   });
   it("MlclHttp should automatically attach the middleware", () => {
-    let mhttp = di.getInstance("MlclHttp");
+    const mhttp = di.getInstance("MlclHttp");
     assert(mhttp !== undefined);
     assert(mhttp instanceof MlclHttp);
     assert(mhttp.app instanceof MlclHttpMiddleware);
   });
   it("MlclHttp attached middleware should be singleton", () => {
-    let mhttp = di.getInstance("MlclHttp");
+    const mhttp = di.getInstance("MlclHttp");
     assert(mhttp.app === di.getInstance("MlclHttpMiddleware"));
   });
   it("should get a reply from the application", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .get("/mlclhttp/health")
     .end((err: any, res: supertest.Response) => {
@@ -133,7 +133,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should get a reply from the test read", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .get("/testread")
     .end((err: any, res: supertest.Response) => {
@@ -143,7 +143,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should get a reply from the test read with parameters and query options", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .get("/testread/111?large=true")
     .end((err: any, res: supertest.Response) => {
@@ -155,7 +155,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should get a reply from the test read with RSS XML result type", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .get("/testreadXml")
     .end((err: any, res: supertest.Response) => {
@@ -166,7 +166,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should be able to send a post request to create a object", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testcreate")
     .send({testdata: "mytest"})
@@ -177,7 +177,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should be able to send a post request to update a object", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testupdate/myid")
     .send({testdata: "mytest"})
@@ -188,7 +188,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should be able to send a put request to replace a object", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .put("/testreplace/123")
     .send({testdata: "mytest"})
@@ -199,7 +199,7 @@ describe("MlclHttp", () => {
     });
   });
   it("should be able to send a delete request for a object", (done) => {
-    let app = di.getInstance("MlclHttpMiddleware");
+    const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .delete("/testdelete/123")
     .end((err: any, res: supertest.Response) => {
