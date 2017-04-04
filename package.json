@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/http",
-  "version": "0.1.4",
+  "version": "2.0.0-alpha1",
   "description": "HTTP module for molecuel Application framework",
   "main": "dist/index.js",
   "scripts": {
