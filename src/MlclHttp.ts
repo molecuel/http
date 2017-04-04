@@ -45,76 +45,68 @@ export class MlclHttp {
         if (factory) {
           const factoryClassInstance = di.getInstance(factory.targetName);
 
-          switch (factory.operation) {
-            case "create":
-              coreRouter.post(route.url, async (ctx) => {
-                const mergedProps = Object.assign({}, ctx.query, ctx.params);
-                const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
-                // execute function from dataFactory
-                try {
-                  const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-                  ctx.status = 201;
-                  // @todo add location?
-                } catch (error) {
-                  ctx.status = 500;
-                }
-              });
-              break;
-            case "update":
-              coreRouter.post(route.url, async (ctx) => {
-                const mergedProps = Object.assign({}, ctx.query, ctx.params);
-                const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
-                // execute function from dataFactory
-                try {
-                  const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-                  ctx.status = 200;
-                  // @todo add location?
-                } catch (error) {
-                  ctx.status = 500;
-                }
-              });
-              break;
-            case "replace":
-              coreRouter.put(route.url, async (ctx) => {
-                const mergedProps = Object.assign({}, ctx.query, ctx.params);
-                const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
-                // execute function from dataFactory
-                try {
-                  const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-                  ctx.status = 200;
-                  // @todo add location?
-                } catch (error) {
-                  ctx.status = 500;
-                }
-              });
-              break;
-            case "read":
-              coreRouter.get(route.url, async (ctx) => {
-                const mergedProps = Object.assign({}, ctx.query, ctx.params);
-                const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
-                // execute function from dataFactory
+          if(factory.operation === "create") {
+            coreRouter.post(route.url, async (ctx) => {
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+              // execute function from dataFactory
+              try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-                ctx.body = returnValue;
-                if (factory.resultType) {
-                  ctx.type = factory.resultType;
-                }
-              });
-              break;
-            case "delete":
-              coreRouter.delete(route.url, async (ctx) => {
-                const mergedProps = Object.assign({}, ctx.query, ctx.params);
-                const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
-                // execute function from dataFactory
-                try {
-                  const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-                  ctx.status = 204;
-                } catch (error) {
-                  ctx.status = 500;
-                }
-              });
-              break;
-            default:
-              break;
+                ctx.status = 201;
+                // @todo add location?
+              } catch (error) {
+                ctx.status = 500;
+              }
+            });
+          } else if(factory.operation === "update") {
+            coreRouter.post(route.url, async (ctx) => {
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+              // execute function from dataFactory
+              try {
+                const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                ctx.status = 200;
+                // @todo add location?
+              } catch (error) {
+                ctx.status = 500;
+              }
+            });
+          } else if(factory.operation === "replace") {
+            coreRouter.put(route.url, async (ctx) => {
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+              // execute function from dataFactory
+              try {
+                const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                ctx.status = 200;
+                // @todo add location?
+              } catch (error) {
+                ctx.status = 500;
+              }
+            });
+          } else if(factory.operation === "read") {
+            coreRouter.get(route.url, async (ctx) => {
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+              // execute function from dataFactory
+              const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+              ctx.body = returnValue;
+              if (factory.resultType) {
+                ctx.type = factory.resultType;
+              }
+            });
+          } else if(factory.operation === "delete") {
+            coreRouter.delete(route.url, async (ctx) => {
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
+              // execute function from dataFactory
+              try {
+                const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                ctx.status = 204;
+              } catch (error) {
+                ctx.status = 500;
+              }
+            });
           }
         }
       }
