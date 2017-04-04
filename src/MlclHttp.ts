@@ -45,7 +45,7 @@ export class MlclHttp {
         if (factory) {
           const factoryClassInstance = di.getInstance(factory.targetName);
 
-          if(factory.operation === "create") {
+          if (factory.operation === "create") {
             coreRouter.post(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
@@ -58,7 +58,7 @@ export class MlclHttp {
                 ctx.status = 500;
               }
             });
-          } else if(factory.operation === "update") {
+          } else if (factory.operation === "update") {
             coreRouter.post(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
@@ -71,7 +71,7 @@ export class MlclHttp {
                 ctx.status = 500;
               }
             });
-          } else if(factory.operation === "replace") {
+          } else if (factory.operation === "replace") {
             coreRouter.put(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
@@ -84,7 +84,7 @@ export class MlclHttp {
                 ctx.status = 500;
               }
             });
-          } else if(factory.operation === "read") {
+          } else if (factory.operation === "read") {
             coreRouter.get(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
@@ -95,7 +95,7 @@ export class MlclHttp {
                 ctx.type = factory.resultType;
               }
             });
-          } else if(factory.operation === "delete") {
+          } else if (factory.operation === "delete") {
             coreRouter.delete(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
