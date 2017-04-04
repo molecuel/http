@@ -25,6 +25,11 @@
         "property": "dataCreateTest"
       },
       {
+        "url": "/testcreateerror",
+        "class": "MyCreateTestRoutes",
+        "property": "dataCreateTestError"
+      },
+      {
         "url": "/testupdate/:id",
         "class": "MyCreateTestRoutes",
         "property": "dataUpdateTest"

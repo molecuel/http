@@ -36,6 +36,10 @@ describe("MlclCoreBootStrap", () => {
       public async dataCreateTest() {
         return true;
       }
+      @dataCreate()
+      public async dataCreateTestError() {
+        throw new Error("My custom error");
+      }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
       ])
@@ -173,6 +177,17 @@ describe("MlclHttp", () => {
     .end((err: any, res: supertest.Response) => {
       assert(err === null);
       assert(res.status === 201);
+      done();
+    });
+  });
+  it("should be able to send a post request to create a object", (done) => {
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .post("/testcreateerror")
+    .send({testdata: "mytest"})
+    .end((err: any, res: supertest.Response) => {
+      // should.exist(err);
+      res.status.should.equal(500);
       done();
     });
   });
