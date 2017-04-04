@@ -35,14 +35,29 @@
         "property": "dataUpdateTest"
       },
       {
+        "url": "/testupdateerror/:id",
+        "class": "MyCreateTestRoutes",
+        "property": "dataUpdateTestError"
+      },
+      {
         "url": "/testreplace/:id",
         "class": "MyCreateTestRoutes",
         "property": "dataReplaceTest"
       },
-       {
+      {
+        "url": "/testreplaceerror/:id",
+        "class": "MyCreateTestRoutes",
+        "property": "dataReplaceTestError"
+      },
+      {
         "url": "/testdelete/:id",
         "class": "MyCreateTestRoutes",
         "property": "dataDeleteTest"
+      },
+      {
+        "url": "/testdeleteerror/:id",
+        "class": "MyCreateTestRoutes",
+        "property": "dataDeleteTestError"
       }
     ]
   }

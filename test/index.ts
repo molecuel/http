@@ -47,6 +47,10 @@ describe("MlclCoreBootStrap", () => {
       public async dataUpdateTest(id, size) {
         return true;
       }
+      @dataUpdate()
+      public async dataUpdateTestError(id, size) {
+        throw new Error("My custom update error");
+      }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
       ])
@@ -54,12 +58,20 @@ describe("MlclCoreBootStrap", () => {
       public async dataReplaceTest(id, size) {
         return true;
       }
+      @dataReplace()
+      public async dataReplaceTestError(id, size) {
+        throw new Error("Error on replace");
+      }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
       ])
       @dataDelete()
       public async dataDeleteTest(id, size) {
         return true;
+      }
+      @dataDelete()
+      public async dataDeleteTestError(id, size) {
+        throw new Error("Error on delete");
       }
     }
   });
@@ -180,7 +192,7 @@ describe("MlclHttp", () => {
       done();
     });
   });
-  it("should be able to send a post request to create a object", (done) => {
+  it("should be able to send a post request to create a object and return a error", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testcreateerror")
@@ -202,6 +214,16 @@ describe("MlclHttp", () => {
       done();
     });
   });
+  it("should be able to send a post request to update a object and return an error", (done) => {
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .post("/testupdateerror/myid")
+    .send({testdata: "mytest"})
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 500);
+      done();
+    });
+  });
   it("should be able to send a put request to replace a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
@@ -213,6 +235,17 @@ describe("MlclHttp", () => {
       done();
     });
   });
+  it("should be able to send a put request to replace a object and return a error on error", (done) => {
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .put("/testreplaceerror/123")
+    .send({testdata: "mytest"})
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 500);
+      done();
+    });
+  });
+
   it("should be able to send a delete request for a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
@@ -220,6 +253,15 @@ describe("MlclHttp", () => {
     .end((err: any, res: supertest.Response) => {
       assert(err === null);
       assert(res.status === 204);
+      done();
+    });
+  });
+    it("should be able to send a delete request for a object and return a error on error", (done) => {
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .delete("/testdeleteerror/123")
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 500);
       done();
     });
   });
