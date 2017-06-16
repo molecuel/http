@@ -1,14 +1,17 @@
 "use strict";
-import {init, MlclConfig, MlclCore, MlclDataFactory} from "@molecuel/core";
-import {di, injectable, singleton} from "@molecuel/di";
-import {Observable} from "@reactivex/rxjs";
+import { init, MlclConfig, MlclCore, MlclDataFactory } from "@molecuel/core";
+import { di, injectable, singleton } from "@molecuel/di";
+import { Observable } from "@reactivex/rxjs";
 import * as Koa from "koa";
 import * as koarouter from "koa-router";
 import * as _ from "lodash";
 import "reflect-metadata";
-import {MlclHttpMiddleware} from "./middleware/MlclHttpMiddleware";
-import {MlclHttpCoreRouter} from "./router/MlclHttpCoreRouter";
-import {MlclHttpRouter} from "./router/MlclHttpRouter";
+import { MlclHttpMiddleware } from "./middleware/MlclHttpMiddleware";
+import { MlclHttpCoreRouter } from "./router/MlclHttpCoreRouter";
+import { MlclHttpRouter } from "./router/MlclHttpRouter";
+
+import * as inflate from "inflation";
+import * as raw from "raw-body";
 
 /**
  * @description The main molecuel HTTP module
@@ -21,6 +24,31 @@ export class MlclHttp {
   private app: MlclHttpMiddleware;
   constructor(app: MlclHttpMiddleware) {
     this.app = app;
+  }
+
+  @init(50)
+  private initAppBodyParser() {
+    return Observable.create((y) => {
+      const app = di.getInstance("MlclHttpMiddleware");
+      app.use(async(ctx, next) => {
+        try {
+          const buffer = await raw(inflate(ctx.req));
+          if (buffer) {
+            const stringified = buffer.toString();
+            ctx.request.body = stringified ? JSON.parse(stringified) : {};
+          }
+        } catch (error) {
+          if (onerror) {
+            onerror(error, ctx);
+          } else {
+            throw error;
+          }
+        }
+        await next();
+      })
+      y.next(y);
+      y.complete();
+    });
   }
 
   @init(70)
@@ -47,7 +75,7 @@ export class MlclHttp {
 
           if (factory.operation === "create") {
             coreRouter.post(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -60,7 +88,7 @@ export class MlclHttp {
             });
           } else if (factory.operation === "update") {
             coreRouter.post(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -73,7 +101,7 @@ export class MlclHttp {
             });
           } else if (factory.operation === "replace") {
             coreRouter.put(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {

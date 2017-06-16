@@ -44,23 +44,25 @@ class MyCreateTestRoutes {
   }
   @mapDataParams([
     new MlclDataParam("id", "id", "integer", 25),
+    new MlclDataParam("body", "postdata", "json"),
+    new MlclDataParam("body.property", "child", "string"),
   ])
   @dataUpdate()
-  public async dataUpdateTest(id, size) {
+  public async dataUpdateTest(id, postdata, child) {
     return true;
   }
   @mapDataParams([
     new MlclDataParam("id", "id", "integer", 25),
   ])
   @dataReplace()
-  public async dataReplaceTest(id, size) {
+  public async dataReplaceTest(id) {
     return true;
   }
   @mapDataParams([
     new MlclDataParam("id", "id", "integer", 25),
   ])
   @dataDelete()
-  public async dataDeleteTest(id, size) {
+  public async dataDeleteTest(id) {
     return true;
   }
 }

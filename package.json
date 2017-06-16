@@ -1,12 +1,12 @@
 {
   "name": "@molecuel/http",
-  "version": "2.0.0-alpha1",
+  "version": "2.0.0-alpha2",
   "description": "HTTP module for molecuel Application framework",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "tslint": "./node_modules/.bin/tslint --project tsconfig.json",
+    "tslint": "./node_modules/.bin/tslint --project tsconfig.npm.json",
     "tslint_test": "./node_modules/.bin/tslint --project tsconfig.test.json",
-    "ts": "./node_modules/.bin/tsc -p .",
+    "ts": "./node_modules/.bin/tsc -p tsconfig.npm.json",
     "ts_test": "./node_modules/.bin/tsc -p tsconfig.test.json",
     "build": "npm run tslint && npm run ts",
     "build_test": "npm run tslint_test && npm run ts_test",
@@ -50,8 +50,10 @@
     "@molecuel/core": "^2.0.17",
     "@molecuel/di": "^0.2.0",
     "@reactivex/rxjs": "^5.0.0-rc.5",
+    "inflation": "^2.0.0",
     "koa": "2.2.0",
     "koa-router": "next",
+    "raw-body": "^2.2.0",
     "reflect-metadata": "^0.1.3"
   }
 }
