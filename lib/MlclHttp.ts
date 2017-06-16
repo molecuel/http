@@ -30,7 +30,7 @@ export class MlclHttp {
   private initAppBodyParser() {
     return Observable.create((y) => {
       const app = di.getInstance("MlclHttpMiddleware");
-      app.use(async(ctx, next) => {
+      app.use(async (ctx, next) => {
         try {
           const buffer = await raw(inflate(ctx.req));
           if (buffer) {
@@ -45,7 +45,7 @@ export class MlclHttp {
           }
         }
         await next();
-      })
+      });
       y.next(y);
       y.complete();
     });

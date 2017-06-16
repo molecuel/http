@@ -47,7 +47,7 @@
     "typescript": "^2.2.2"
   },
   "dependencies": {
-    "@molecuel/core": "^2.0.17",
+    "@molecuel/core": "^2.0.20",
     "@molecuel/di": "^0.2.0",
     "@reactivex/rxjs": "^5.0.0-rc.5",
     "inflation": "^2.0.0",
