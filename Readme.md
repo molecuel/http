@@ -1,4 +1,5 @@
-# @molecuel/http [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+# @molecuel/http
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 
 HTTP module for the Molecuel framework
 
