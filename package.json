@@ -42,7 +42,7 @@
     "should": "<13.1.0",
     "supertest": "^3.0.0",
     "tslint": "^5.0.0",
-    "typedoc": "^0.8.0",
+    "typedoc": "^0.10.0",
     "typescript": "^2.5.2"
   },
   "dependencies": {
