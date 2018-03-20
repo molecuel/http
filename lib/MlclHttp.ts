@@ -81,6 +81,7 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 201;
+                ctx.body = returnValue;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
@@ -94,6 +95,7 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 200;
+                ctx.body = returnValue;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
@@ -107,6 +109,7 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 200;
+                ctx.body = returnValue;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
@@ -131,6 +134,7 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 204;
+                ctx.body = returnValue;
               } catch (error) {
                 ctx.status = 500;
               }
