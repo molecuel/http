@@ -75,7 +75,8 @@ export class MlclHttp {
 
           if (factory.operation === "create") {
             coreRouter.post(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -89,7 +90,8 @@ export class MlclHttp {
             });
           } else if (factory.operation === "update") {
             coreRouter.post(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -103,7 +105,8 @@ export class MlclHttp {
             });
           } else if (factory.operation === "replace") {
             coreRouter.put(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -117,7 +120,8 @@ export class MlclHttp {
             });
           } else if (factory.operation === "read") {
             coreRouter.get(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
@@ -128,7 +132,8 @@ export class MlclHttp {
             });
           } else if (factory.operation === "delete") {
             coreRouter.delete(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
