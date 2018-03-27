@@ -117,7 +117,7 @@ export class MlclHttp {
             });
           } else if (factory.operation === "read") {
             coreRouter.get(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
@@ -128,7 +128,7 @@ export class MlclHttp {
             });
           } else if (factory.operation === "delete") {
             coreRouter.delete(route.url, async (ctx) => {
-              const mergedProps = Object.assign({}, ctx.query, ctx.params);
+              const mergedProps = Object.assign({}, ctx.query, ctx.params, ctx.request);
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
