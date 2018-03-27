@@ -77,6 +77,7 @@ export class MlclHttp {
             coreRouter.post(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
+              mergedProps.body = ctx.request.body;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -92,6 +93,7 @@ export class MlclHttp {
             coreRouter.post(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
+              mergedProps.body = ctx.request.body;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -107,6 +109,7 @@ export class MlclHttp {
             coreRouter.put(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
+              mergedProps.body = ctx.request.body;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {
@@ -134,6 +137,7 @@ export class MlclHttp {
             coreRouter.delete(route.url, async (ctx) => {
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
+              mergedProps.body = ctx.request.body;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
               try {

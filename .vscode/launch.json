@@ -28,10 +28,12 @@
             "program": "${workspaceRoot}\\node_modules\\mocha\\bin\\_mocha",
             "cwd": "${workspaceRoot}/",
             "stopOnEntry": false,
+            "args": ["--exit"],
             "runtimeExecutable": null,
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/test/**/*.js"
+                "${workspaceRoot}/test/**/*.js",
+                "${workspaceRoot}/lib/**/*.js"
             ]
         }
     ]
