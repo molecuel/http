@@ -26,6 +26,59 @@ export class MlclHttp {
     this.app = app;
   }
 
+  public registerRoutesBulk(routes: string[], target: string, type: string, returnType?: string) {
+    // todo
+    const core = di.getInstance("MlclCore");
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const parts = target.split(".");
+    const root = parts[0] = di.getInstance(parts[0]);
+    const className = parts.slice(-2, 1);
+    const propertyName = parts.slice(-1);
+    // const factory = core.getDataFactories().find((item) => (
+    //   item.targetName === className
+    //   && item.targetProperty === propertyName
+    // ));
+    const method: any = parts.reduce((parent, prop) => parent[prop]);
+    routes.forEach((route) => {
+      coreRouter[this.typeSwitch(type).httpType](route, async (ctx) => {
+        try {
+          const mergedProps = Object.assign({}, ctx.query, ctx.params);
+          mergedProps.request = ctx.request;
+          mergedProps.body = ctx.request.body;
+          const parsedProps = core.getDataParams(className, propertyName)
+            ? core.renderDataParams(mergedProps, className, propertyName)
+            : Object.values(mergedProps);
+          ctx.body = await method(...parsedProps);
+          ctx.status = this.typeSwitch(type).httpCode;
+          if (this.typeSwitch(type).httpType === "get" && returnType) {
+            ctx.type = returnType;
+          }
+        } catch (error) {
+          ctx.status = 500;
+          ctx.body = error;
+        }
+      });
+    });
+  }
+
+  private typeSwitch(type: string): { httpType: string, httpCode: number } {
+    switch (type) {
+      case "get":
+      case "read":
+        return { httpType: "get", httpCode: 200 };
+      case "update":
+      case "post":
+        return { httpType: "post", httpCode: 200 };
+      case "create":
+        return { httpType: "post", httpCode: 201 };
+      case "replace":
+      case "put":
+        return { httpType: "put", httpCode: 200 };
+      case "delete":
+        return { httpType: "delete", httpCode: 204 };
+    }
+  }
+
   @init(50)
   private initAppBodyParser() {
     return Observable.create((y) => {

@@ -144,6 +144,11 @@ describe("MlclHttp", () => {
     const mhttp = di.getInstance("MlclHttp");
     assert(mhttp.app === di.getInstance("MlclHttpMiddleware"));
   });
+  it("should add some routes dynamically", () => {
+    const mhttp: MlclHttp = di.getInstance("MlclHttp");
+    const getRoutes: string[] = ["/testdynamicget1", "/testdynamicget2", "/testdynamicget3"];
+    mhttp.registerRoutesBulk(getRoutes, "MyCreateTestRoutes.dataReadeTest1", "read");
+  });
   it("should get a reply from the application", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
@@ -268,6 +273,31 @@ describe("MlclHttp", () => {
     .delete("/testdeleteerror/123")
     .end((err: any, res: supertest.Response) => {
       assert(res.status === 500);
+      done();
+    });
+  });
+  it("should be able to send a request to a 'dynamic' route", (done) => {
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .get("/testdynamicget1?id=1234&size=0")
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 200);
+      assert(res.body !== undefined);
+      assert(res.body.id === "1234");
+      assert(res.body.size === "0");
+      done();
+    });
+  });
+  it("should be able to send a request to a recently registered 'dynamic' route", (done) => {
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const createRoutes: string[] = ["/testdynamiccreate1", "/testdynamiccreate2", "/testdynamiccreate3"];
+    const mhttp: MlclHttp = di.getInstance("MlclHttp");
+    mhttp.registerRoutesBulk(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .post("/testdynamiccreate2?blablubb=12")
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 201);
       done();
     });
   });
