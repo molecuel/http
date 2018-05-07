@@ -24,9 +24,20 @@ describe("MlclCoreBootStrap", () => {
           size,
         };
       }
+      @mapDataParams([
+        new MlclDataParam("request.headers.perms", "perms", "boolean"),
+        new MlclDataParam("request.headers.params", "params", "string"),
+    ])
       @dataRead()
-      public async dataReadeTest2() {
-        return {};
+      public async dataReadeTest2(perms?, params?) {
+        const result: any = {};
+        if (perms) {
+          result.perms = perms;
+        }
+        if (params) {
+          result.params = params;
+        }
+        return result;
       }
       @dataRead("application/rss+xml")
       public async dataReadeTestXml() {
@@ -293,7 +304,6 @@ describe("MlclHttp", () => {
     const createRoutes: string[] = ["/testdynamiccreate1", "/testdynamiccreate2", "/testdynamiccreate3"];
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
     mhttp.registerRoutesBulk(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
-    // mhttp.registerRoutesBulk(createRoutes, di.getInstance("MyCreateTestRoutes").dataCreateTest, "create");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testdynamiccreate2?blablubb=12")
@@ -317,6 +327,36 @@ describe("MlclHttp", () => {
       assert(Array.isArray(res.body));
       assert(res.body.length === 3);
       assert(res.body.every((item) => typeof item === "string"));
+      done();
+    });
+  });
+  it("should be able to handle a request with waterfall routes", (done) => {
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const mhttp: MlclHttp = di.getInstance("MlclHttp");
+    mhttp.registerRoutesBulk(["/*"], (...params) => {
+      if (params.length > 1) {
+        const request = params[params.length - 2];
+        request.headers.perms = true;
+      }
+    }, ["get", "post", "delete"]);
+    mhttp.registerRoutesBulk(["/specific/*"], (...params) => {
+      if (params.length > 1) {
+        const request = params[params.length - 2];
+        params[0] = params.find((param) => param.path).path;
+        request.headers.params = params.filter((item) => typeof item === "string");
+      }
+    }, ["get", "post", "delete"]);
+    mhttp.registerRoutesBulk(["/specific/getter"], "MyCreateTestRoutes.dataReadeTest2", "get");
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .get("/specific/getter?id=567&size=999")
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 200);
+      assert(res.body);
+      assert(Array.isArray(res.body.params));
+      assert(res.body.params.length === 3);
+      assert(res.body.params.every((item) => typeof item === "string"));
+      assert(res.body.perms === true);
       done();
     });
   });

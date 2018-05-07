@@ -41,8 +41,8 @@ export class MlclHttp {
     if (typeof target === "string") {
       const parts = target.split(".");
       const root = parts[0] = di.getInstance(parts[0]);
-      className = parts.slice(-2, 1);
-      propertyName = parts.slice(-1);
+      className = parts.slice(-2, 1)[0].constructor.name;
+      propertyName = parts.slice(-1)[0];
       method = parts.reduce((parent, prop) => parent[prop]);
     } else if (typeof target === "function") {
       method = target;
@@ -58,6 +58,9 @@ export class MlclHttp {
     //   item.targetName === className
     //   && item.targetProperty === propertyName
     // ));
+    // coreRouter.stack.sort((previousItem, currentItem) => {
+    //   return previousItem.path ? previousItem.path.length : 0 - currentItem.path ? currentItem.path.length : 0;
+    // });
     routes.forEach((route) => {
       types.forEach((subType) => {
         coreRouter[this.typeSwitch(subType).httpType](route, async (ctx, next) => {
@@ -77,6 +80,7 @@ export class MlclHttp {
             ctx.status = 500;
             ctx.body = error;
           }
+          await next();
         });
       });
     });
