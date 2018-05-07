@@ -293,11 +293,30 @@ describe("MlclHttp", () => {
     const createRoutes: string[] = ["/testdynamiccreate1", "/testdynamiccreate2", "/testdynamiccreate3"];
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
     mhttp.registerRoutesBulk(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
+    // mhttp.registerRoutesBulk(createRoutes, di.getInstance("MyCreateTestRoutes").dataCreateTest, "create");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testdynamiccreate2?blablubb=12")
     .end((err: any, res: supertest.Response) => {
       assert(res.status === 201);
+      done();
+    });
+  });
+  it("should be able to handle a request with fallback route", (done) => {
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const mhttp: MlclHttp = di.getInstance("MlclHttp");
+    mhttp.registerRoutesBulk(["/testdynamicget*"], (...params) => {
+      params[0] = params.find((param) => param.path).path;
+      return params.filter((item) => typeof item === "string");
+    }, "get");
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+    .get("/testdynamicget9?id=567&size=999")
+    .end((err: any, res: supertest.Response) => {
+      assert(res.status === 200);
+      assert(Array.isArray(res.body));
+      assert(res.body.length === 3);
+      assert(res.body.every((item) => typeof item === "string"));
       done();
     });
   });

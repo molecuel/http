@@ -36,3 +36,5 @@ lib/**/*.js.map
 coverage
 test/**/*.js
 test/**/*.js.map
+
+package-lock\.json

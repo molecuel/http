@@ -26,37 +26,58 @@ export class MlclHttp {
     this.app = app;
   }
 
-  public registerRoutesBulk(routes: string[], target: string, type: string, returnType?: string) {
-    // todo
+  public registerRoutesBulk(
+    routes: string[],
+    target: string | ((...params) => any),
+    type: string | string[],
+    returnType?: string,
+  ) {
     const core = di.getInstance("MlclCore");
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
-    const parts = target.split(".");
-    const root = parts[0] = di.getInstance(parts[0]);
-    const className = parts.slice(-2, 1);
-    const propertyName = parts.slice(-1);
+    let className;
+    let propertyName;
+    let method;
+    let types: string[];
+    if (typeof target === "string") {
+      const parts = target.split(".");
+      const root = parts[0] = di.getInstance(parts[0]);
+      className = parts.slice(-2, 1);
+      propertyName = parts.slice(-1);
+      method = parts.reduce((parent, prop) => parent[prop]);
+    } else if (typeof target === "function") {
+      method = target;
+    } else {
+      throw new Error("No valid target.");
+    }
+    if (Array.isArray(type)) {
+      types = type;
+    } else {
+      types = [type];
+    }
     // const factory = core.getDataFactories().find((item) => (
     //   item.targetName === className
     //   && item.targetProperty === propertyName
     // ));
-    const method: any = parts.reduce((parent, prop) => parent[prop]);
     routes.forEach((route) => {
-      coreRouter[this.typeSwitch(type).httpType](route, async (ctx) => {
-        try {
-          const mergedProps = Object.assign({}, ctx.query, ctx.params);
-          mergedProps.request = ctx.request;
-          mergedProps.body = ctx.request.body;
-          const parsedProps = core.getDataParams(className, propertyName)
-            ? core.renderDataParams(mergedProps, className, propertyName)
-            : Object.values(mergedProps);
-          ctx.body = await method(...parsedProps);
-          ctx.status = this.typeSwitch(type).httpCode;
-          if (this.typeSwitch(type).httpType === "get" && returnType) {
-            ctx.type = returnType;
+      types.forEach((subType) => {
+        coreRouter[this.typeSwitch(subType).httpType](route, async (ctx, next) => {
+          try {
+            const mergedProps = Object.assign({}, ctx.query, ctx.params);
+            mergedProps.request = ctx.request;
+            mergedProps.body = ctx.request.body;
+            const parsedProps = core.getDataParams(className, propertyName)
+              ? core.renderDataParams(mergedProps, className, propertyName)
+              : Object.values(mergedProps);
+            ctx.body = await method(...parsedProps);
+            ctx.status = this.typeSwitch(subType).httpCode;
+            if (this.typeSwitch(subType).httpType === "get" && returnType) {
+              ctx.type = returnType;
+            }
+          } catch (error) {
+            ctx.status = 500;
+            ctx.body = error;
           }
-        } catch (error) {
-          ctx.status = 500;
-          ctx.body = error;
-        }
+        });
       });
     });
   }
@@ -76,6 +97,8 @@ export class MlclHttp {
         return { httpType: "put", httpCode: 200 };
       case "delete":
         return { httpType: "delete", httpCode: 204 };
+      default:
+        throw new Error("No valid type.");
     }
   }
 
