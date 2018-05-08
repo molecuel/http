@@ -1,21 +1,24 @@
 "use strict";
 process.env.configpath = "./test/config/";
-import {dataCreate, dataDelete, dataRead, dataReplace, dataUpdate, mapDataParams,
-  MlclCore, MlclDataParam} from "@molecuel/core";
-import {di, injectable} from "@molecuel/di";
+import {
+  dataCreate, dataDelete, dataRead, dataReplace, dataUpdate, mapDataParams,
+  MlclCore, MlclDataParam,
+} from "@molecuel/core";
+import { di, injectable } from "@molecuel/di";
 import * as assert from "assert";
+import * as _ from "lodash";
 import "reflect-metadata";
 import * as should from "should";
 import * as supertest from "supertest";
-import {MlclHttp, MlclHttpCoreRouter, MlclHttpMiddleware, MlclHttpRouter} from "../lib";
+import { MlclHttp, MlclHttpCoreRouter, MlclHttpMiddleware, MlclHttpRouter } from "../lib";
 
 describe("MlclCoreBootStrap", () => {
   before(() => {
     @injectable
     class MyCreateTestRoutes {
       @mapDataParams([
-          new MlclDataParam("id", "id", "integer", 25),
-          new MlclDataParam("large", "size", "boolean"),
+        new MlclDataParam("id", "id", "integer", 25),
+        new MlclDataParam("large", "size", "boolean"),
       ])
       @dataRead()
       public async dataReadeTest1(id, size) {
@@ -27,7 +30,7 @@ describe("MlclCoreBootStrap", () => {
       @mapDataParams([
         new MlclDataParam("request.headers.perms", "perms", "boolean"),
         new MlclDataParam("request.headers.params", "params", "string"),
-    ])
+      ])
       @dataRead()
       public async dataReadeTest2(perms?, params?) {
         const result: any = {};
@@ -140,6 +143,14 @@ describe("MlclHttpRouter", () => {
 });
 
 describe("MlclHttp", () => {
+  afterEach(() => {
+    const cR = di.getInstance("MlclHttpCoreRouter");
+    // try {
+    cR.stack = cR.stack.filter((item) => !item.path.includes("*"));
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  });
   it("should return a MlclHttp instance", () => {
     const mhttp = di.getInstance("MlclHttp");
     assert(mhttp !== undefined);
@@ -158,144 +169,144 @@ describe("MlclHttp", () => {
   it("should add some routes dynamically", () => {
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
     const getRoutes: string[] = ["/testdynamicget1", "/testdynamicget2", "/testdynamicget3"];
-    mhttp.registerRoutesBulk(getRoutes, "MyCreateTestRoutes.dataReadeTest1", "read");
+    mhttp.registerRoutes(getRoutes, "MyCreateTestRoutes.dataReadeTest1", "read");
   });
   it("should get a reply from the application", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/mlclhttp/health")
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 200);
-      done();
-    });
+      .get("/mlclhttp/health")
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 200);
+        done();
+      });
   });
   it("should get a reply from the test read", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testread")
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 200);
-      done();
-    });
+      .get("/testread")
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 200);
+        done();
+      });
   });
   it("should get a reply from the test read with parameters and query options", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testread/111?large=true")
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 200);
-      assert(res.body.id === 111);
-      assert(res.body.size === true);
-      done();
-    });
+      .get("/testread/111?large=true")
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 200);
+        assert(res.body.id === 111);
+        assert(res.body.size === true);
+        done();
+      });
   });
   it("should get a reply from the test read with RSS XML result type", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testreadXml")
-    .end((err: any, res: supertest.Response) => {
-      should.not.exist(err);
-      should.strictEqual(res.status, 200);
-      should.strictEqual(res.header["content-type"], "application/rss+xml");
-      done();
-    });
+      .get("/testreadXml")
+      .end((err: any, res: supertest.Response) => {
+        should.not.exist(err);
+        should.strictEqual(res.status, 200);
+        should.strictEqual(res.header["content-type"], "application/rss+xml");
+        done();
+      });
   });
   it("should be able to send a post request to create a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .post("/testcreate")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 201);
-      done();
-    });
+      .post("/testcreate")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 201);
+        done();
+      });
   });
   it("should be able to send a post request to create a object and return a error", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .post("/testcreateerror")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      // should.exist(err);
-      res.status.should.equal(500);
-      done();
-    });
+      .post("/testcreateerror")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        // should.exist(err);
+        res.status.should.equal(500);
+        done();
+      });
   });
   it("should be able to send a post request to update a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     // app.use(bodyparser());
     supertest(app.listen())
-    .post("/testupdate/myid")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 200);
-      done();
-    });
+      .post("/testupdate/myid")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 200);
+        done();
+      });
   });
   it("should be able to send a post request to update a object and return an error", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .post("/testupdateerror/myid")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 500);
-      done();
-    });
+      .post("/testupdateerror/myid")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 500);
+        done();
+      });
   });
   it("should be able to send a put request to replace a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .put("/testreplace/123")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 200);
-      done();
-    });
+      .put("/testreplace/123")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 200);
+        done();
+      });
   });
   it("should be able to send a put request to replace a object and return a error on error", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .put("/testreplaceerror/123")
-    .send({testdata: "mytest"})
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 500);
-      done();
-    });
+      .put("/testreplaceerror/123")
+      .send({ testdata: "mytest" })
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 500);
+        done();
+      });
   });
   it("should be able to send a delete request for a object", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .delete("/testdelete/123")
-    .end((err: any, res: supertest.Response) => {
-      assert(err === null);
-      assert(res.status === 204);
-      done();
-    });
+      .delete("/testdelete/123")
+      .end((err: any, res: supertest.Response) => {
+        assert(err === null);
+        assert(res.status === 204);
+        done();
+      });
   });
   it("should be able to send a delete request for a object and return a error on error", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .delete("/testdeleteerror/123")
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 500);
-      done();
-    });
+      .delete("/testdeleteerror/123")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 500);
+        done();
+      });
   });
   it("should be able to send a request to a 'dynamic' route", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testdynamicget1?id=1234&size=0")
+    .get("/testdynamicget1?id=1234&large=false")
     .end((err: any, res: supertest.Response) => {
       assert(res.status === 200);
       assert(res.body !== undefined);
-      assert(res.body.id === "1234");
-      assert(res.body.size === "0");
+      assert(res.body.id === 1234);
+      assert(res.body.size === false);
       done();
     });
   });
@@ -303,7 +314,7 @@ describe("MlclHttp", () => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
     const createRoutes: string[] = ["/testdynamiccreate1", "/testdynamiccreate2", "/testdynamiccreate3"];
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
-    mhttp.registerRoutesBulk(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
+    mhttp.registerRoutes(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
     .post("/testdynamiccreate2?blablubb=12")
@@ -315,7 +326,7 @@ describe("MlclHttp", () => {
   it("should be able to handle a request with fallback route", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
-    mhttp.registerRoutesBulk(["/testdynamicget*"], (...params) => {
+    mhttp.registerRoutes(["/testdynamicget*"], (...params) => {
       params[0] = params.find((param) => param.path).path;
       return params.filter((item) => typeof item === "string");
     }, "get");
@@ -333,31 +344,88 @@ describe("MlclHttp", () => {
   it("should be able to handle a request with waterfall routes", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
-    mhttp.registerRoutesBulk(["/*"], (...params) => {
-      if (params.length > 1) {
-        const request = params[params.length - 2];
-        request.headers.perms = true;
-      }
-    }, ["get", "post", "delete"]);
-    mhttp.registerRoutesBulk(["/specific/*"], (...params) => {
-      if (params.length > 1) {
-        const request = params[params.length - 2];
-        params[0] = params.find((param) => param.path).path;
-        request.headers.params = params.filter((item) => typeof item === "string");
-      }
-    }, ["get", "post", "delete"]);
-    mhttp.registerRoutesBulk(["/specific/getter"], "MyCreateTestRoutes.dataReadeTest2", "get");
+    mhttp.registerRoutes(
+      ["/*"],
+      (...params) => {
+        if (params.length > 1) {
+          const request = params[params.length - 2];
+          request.headers.perms = true;
+        }
+      }, ["get", "post", "delete"],
+      (async (target: any, params: any[], next) => {
+        await target(...params);
+        await next();
+      }),
+    );
+    mhttp.registerRoutes(
+      ["/specific/*"],
+      (...params) => {
+        if (params.length > 1) {
+          const request = params[params.length - 2];
+          params[0] = params.find((param) => param.path).path;
+          request.headers.params = params.filter((item) => typeof item === "string");
+        }
+      },
+      ["get", "post", "delete"],
+      (async (target: any, params: any[], next) => {
+        await target(...params);
+        await next();
+      }),
+    );
+    mhttp.registerRoutes(["/specific/getter"], "MyCreateTestRoutes.dataReadeTest2", "get");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/specific/getter?id=567&size=999")
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 200);
-      assert(res.body);
-      assert(Array.isArray(res.body.params));
-      assert(res.body.params.length === 3);
-      assert(res.body.params.every((item) => typeof item === "string"));
-      assert(res.body.perms === true);
-      done();
-    });
+      .get("/specific/getter?id=567&size=999")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 200);
+        assert(res.body);
+        assert(Array.isArray(res.body.params));
+        assert(res.body.params.length === 3);
+        assert(res.body.params.every((item) => typeof item === "string"));
+        assert(res.body.perms === true);
+        done();
+      });
+  });
+  it("should stop mid waterfall", (done) => {
+    const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    const mhttp: MlclHttp = di.getInstance("MlclHttp");
+    mhttp.registerRoutes(
+      ["/*"],
+      (...params) => {
+        if (params.length > 1) {
+          const request = params[params.length - 2];
+          request.headers.perms = true;
+        }
+      }, ["get", "post", "delete"],
+      (async (target: any, params: any[], next) => {
+        await target(...params);
+        await next();
+      }),
+    );
+    mhttp.registerRoutes(
+      ["/specific/*"],
+      (...params) => {
+        if (params.length > 1) {
+          const request = params[params.length - 2];
+          params[0] = params.find((param) => param.path).path;
+          request.headers.params = params.filter((item) => typeof item === "string");
+        }
+      },
+      ["get", "post", "delete"],
+      (async (target: any, params: any[]) => {
+        await target(...params);
+      }),
+    );
+    mhttp.registerRoutes(["/specific/getter"], "MyCreateTestRoutes.dataReadeTest1", "get");
+    const app = di.getInstance("MlclHttpMiddleware");
+    supertest(app.listen())
+      .get("/specific/getter?id=567&size=999")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 200);
+        assert(res.body);
+        assert(res.body instanceof Object);
+        assert(Object.keys(res.body).length === 0);
+        done();
+      });
   });
 });

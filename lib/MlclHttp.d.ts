@@ -3,7 +3,7 @@ import { MlclHttpMiddleware } from "./middleware/MlclHttpMiddleware";
 export declare class MlclHttp {
     private app;
     constructor(app: MlclHttpMiddleware);
-    registerRoutesBulk(routes: string[], target: string | ((...params) => any), type: string | string[], returnType?: string): void;
+    registerRoutes(routes: string[], target: string | ((...params) => any), type: string | string[], routingFunc?: ((target: ((...params) => any), params: any[], next?) => any), returnType?: string): void;
     private typeSwitch(type);
     private initAppBodyParser();
     private initRoutes();

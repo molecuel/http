@@ -26,10 +26,11 @@ export class MlclHttp {
     this.app = app;
   }
 
-  public registerRoutesBulk(
+  public registerRoutes(
     routes: string[],
     target: string | ((...params) => any),
     type: string | string[],
+    routingFunc?: ((target: ((...params) => any), params: any[], next?) => any),
     returnType?: string,
   ) {
     const core = di.getInstance("MlclCore");
@@ -65,13 +66,18 @@ export class MlclHttp {
       types.forEach((subType) => {
         coreRouter[this.typeSwitch(subType).httpType](route, async (ctx, next) => {
           try {
+            const path = route;
             const mergedProps = Object.assign({}, ctx.query, ctx.params);
             mergedProps.request = ctx.request;
             mergedProps.body = ctx.request.body;
             const parsedProps = core.getDataParams(className, propertyName)
               ? core.renderDataParams(mergedProps, className, propertyName)
               : Object.values(mergedProps);
-            ctx.body = await method(...parsedProps);
+            if (routingFunc) {
+              ctx.body = await routingFunc(method, parsedProps, next) || ctx.body;
+            } else {
+              ctx.body = await method(...parsedProps) || ctx.body;
+            }
             ctx.status = this.typeSwitch(subType).httpCode;
             if (this.typeSwitch(subType).httpType === "get" && returnType) {
               ctx.type = returnType;
@@ -80,7 +86,9 @@ export class MlclHttp {
             ctx.status = 500;
             ctx.body = error;
           }
-          await next();
+          if (!routingFunc) {
+            await next();
+          }
         });
       });
     });
