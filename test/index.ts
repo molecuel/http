@@ -12,10 +12,28 @@ import * as should from "should";
 import * as supertest from "supertest";
 import { MlclHttp, MlclHttpCoreRouter, MlclHttpMiddleware, MlclHttpRouter } from "../lib";
 
+// tslint:disable:max-classes-per-file
+export class TestConstants {
+  public static get CUSTOM_ERROR(): string { return "My custom error"; }
+  public static get CUSTOM_UPDATE_ERROR(): string { return "My custom update error"; }
+  public static get MISSING_DATA_ERROR(): string { return "some data is missing"; }
+  public static get REPLACE_ERROR(): string { return "Error on replace"; }
+  public static get DELETE_ERROR(): string { return "Error on delete"; }
+}
+
 describe("MlclCoreBootStrap", () => {
   before(() => {
     @injectable
     class MyCreateTestRoutes {
+      @mapDataParams([
+        new MlclDataParam("request.headers", "headers", "origin"),
+      ])
+      @dataRead()
+      public async dataPreReadeTest(headers: any) {
+        if (headers) {
+          headers.preRoute = true;
+        }
+      }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
         new MlclDataParam("large", "size", "boolean"),
@@ -30,6 +48,7 @@ describe("MlclCoreBootStrap", () => {
       @mapDataParams([
         new MlclDataParam("request.headers.perms", "perms", "boolean"),
         new MlclDataParam("request.headers.params", "params", "string"),
+        new MlclDataParam("request.headers.preRoute", "preRoute", "boolean"),
       ])
       @dataRead()
       public async dataReadeTest2(perms?, params?) {
@@ -52,7 +71,7 @@ describe("MlclCoreBootStrap", () => {
       }
       @dataCreate()
       public async dataCreateTestError() {
-        throw new Error("My custom error");
+        throw new Error(TestConstants.CUSTOM_ERROR);
       }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
@@ -64,12 +83,12 @@ describe("MlclCoreBootStrap", () => {
         if (id !== undefined && postdata !== undefined) {
           return true;
         } else {
-          throw new Error("some data is missing");
+          throw new Error(TestConstants.MISSING_DATA_ERROR);
         }
       }
       @dataUpdate()
       public async dataUpdateTestError(id, size) {
-        throw new Error("My custom update error");
+        throw new Error(TestConstants.CUSTOM_UPDATE_ERROR);
       }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
@@ -80,7 +99,7 @@ describe("MlclCoreBootStrap", () => {
       }
       @dataReplace()
       public async dataReplaceTestError(id, size) {
-        throw new Error("Error on replace");
+        throw new Error(TestConstants.REPLACE_ERROR);
       }
       @mapDataParams([
         new MlclDataParam("id", "id", "integer", 25),
@@ -91,7 +110,7 @@ describe("MlclCoreBootStrap", () => {
       }
       @dataDelete()
       public async dataDeleteTestError(id, size) {
-        throw new Error("Error on delete");
+        throw new Error(TestConstants.DELETE_ERROR);
       }
     }
   });
@@ -143,14 +162,6 @@ describe("MlclHttpRouter", () => {
 });
 
 describe("MlclHttp", () => {
-  afterEach(() => {
-    const cR = di.getInstance("MlclHttpCoreRouter");
-    // try {
-    cR.stack = cR.stack.filter((item) => !item.path.includes("*"));
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  });
   it("should return a MlclHttp instance", () => {
     const mhttp = di.getInstance("MlclHttp");
     assert(mhttp !== undefined);
@@ -188,6 +199,8 @@ describe("MlclHttp", () => {
       .end((err: any, res: supertest.Response) => {
         assert(err === null);
         assert(res.status === 200);
+        assert(res.body);
+        assert(res.body.preRoute === true);
         done();
       });
   });
@@ -233,6 +246,7 @@ describe("MlclHttp", () => {
       .end((err: any, res: supertest.Response) => {
         // should.exist(err);
         res.status.should.equal(500);
+        res.text.should.equal(TestConstants.CUSTOM_ERROR);
         done();
       });
   });
@@ -255,6 +269,7 @@ describe("MlclHttp", () => {
       .send({ testdata: "mytest" })
       .end((err: any, res: supertest.Response) => {
         assert(res.status === 500);
+        res.text.should.equal(TestConstants.CUSTOM_UPDATE_ERROR);
         done();
       });
   });
@@ -276,6 +291,7 @@ describe("MlclHttp", () => {
       .send({ testdata: "mytest" })
       .end((err: any, res: supertest.Response) => {
         assert(res.status === 500);
+        res.text.should.equal(TestConstants.REPLACE_ERROR);
         done();
       });
   });
@@ -295,20 +311,21 @@ describe("MlclHttp", () => {
       .delete("/testdeleteerror/123")
       .end((err: any, res: supertest.Response) => {
         assert(res.status === 500);
+        res.text.should.equal(TestConstants.DELETE_ERROR);
         done();
       });
   });
   it("should be able to send a request to a 'dynamic' route", (done) => {
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testdynamicget1?id=1234&large=false")
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 200);
-      assert(res.body !== undefined);
-      assert(res.body.id === 1234);
-      assert(res.body.size === false);
-      done();
-    });
+      .get("/testdynamicget1?id=1234&large=false")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 200);
+        assert(res.body !== undefined);
+        assert(res.body.id === 1234);
+        assert(res.body.size === false);
+        done();
+      });
   });
   it("should be able to send a request to a recently registered 'dynamic' route", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
@@ -317,11 +334,11 @@ describe("MlclHttp", () => {
     mhttp.registerRoutes(createRoutes, "MyCreateTestRoutes.dataCreateTest", "create");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .post("/testdynamiccreate2?blablubb=12")
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 201);
-      done();
-    });
+      .post("/testdynamiccreate2?blablubb=12")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 201);
+        done();
+      });
   });
   it("should be able to handle a request with fallback route", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
@@ -332,17 +349,18 @@ describe("MlclHttp", () => {
     }, "get");
     const app = di.getInstance("MlclHttpMiddleware");
     supertest(app.listen())
-    .get("/testdynamicget9?id=567&size=999")
-    .end((err: any, res: supertest.Response) => {
-      assert(res.status === 200);
-      assert(Array.isArray(res.body));
-      assert(res.body.length === 3);
-      assert(res.body.every((item) => typeof item === "string"));
-      done();
-    });
+      .get("/testdynamicget9?id=567&size=999")
+      .end((err: any, res: supertest.Response) => {
+        assert(res.status === 200);
+        assert(Array.isArray(res.body));
+        assert(res.body.length === 3);
+        assert(res.body.every((item) => typeof item === "string"));
+        done();
+      });
   });
   it("should be able to handle a request with waterfall routes", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    coreRouter.stack = coreRouter.stack.filter((item) => item.path.indexOf("*") === -1);
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
     mhttp.registerRoutes(
       ["/*"],
@@ -388,6 +406,7 @@ describe("MlclHttp", () => {
   });
   it("should stop mid waterfall", (done) => {
     const coreRouter = di.getInstance("MlclHttpCoreRouter");
+    coreRouter.stack = coreRouter.stack.filter((item) => item.path.indexOf("*") === -1);
     const mhttp: MlclHttp = di.getInstance("MlclHttp");
     mhttp.registerRoutes(
       ["/*"],

@@ -5,6 +5,11 @@
     },
     "routes": [
       {
+        "url": "/*",
+        "class": "MyCreateTestRoutes",
+        "property": "dataPreReadeTest"
+      },
+      {
         "url": "/testread",
         "class": "MyCreateTestRoutes",
         "property": "dataReadeTest2"

@@ -66,7 +66,7 @@ export class MlclHttp {
       types.forEach((subType) => {
         coreRouter[this.typeSwitch(subType).httpType](route, async (ctx, next) => {
           try {
-            const path = route;
+            const path: string = route;
             const mergedProps = Object.assign({}, ctx.query, ctx.params);
             mergedProps.request = ctx.request;
             mergedProps.body = ctx.request.body;
@@ -162,7 +162,8 @@ export class MlclHttp {
           const factoryClassInstance = di.getInstance(factory.targetName);
 
           if (factory.operation === "create") {
-            coreRouter.post(route.url, async (ctx) => {
+            coreRouter.post(route.url, async (ctx, next) => {
+              const path: string = route.url;
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
               mergedProps.body = ctx.request.body;
@@ -171,14 +172,19 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 201;
-                ctx.body = returnValue;
+                ctx.body = returnValue || ctx.body;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
+                ctx.body = error.message;
+              }
+              if (path && path.indexOf("*") >= 0) {
+                await next();
               }
             });
           } else if (factory.operation === "update") {
-            coreRouter.post(route.url, async (ctx) => {
+            coreRouter.post(route.url, async (ctx, next) => {
+              const path: string = route.url;
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
               mergedProps.body = ctx.request.body;
@@ -187,14 +193,19 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 200;
-                ctx.body = returnValue;
+                ctx.body = returnValue || ctx.body;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
+                ctx.body = error.message;
+              }
+              if (path && path.indexOf("*") >= 0) {
+                await next();
               }
             });
           } else if (factory.operation === "replace") {
-            coreRouter.put(route.url, async (ctx) => {
+            coreRouter.put(route.url, async (ctx, next) => {
+              const path: string = route.url;
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
               mergedProps.body = ctx.request.body;
@@ -203,26 +214,41 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 200;
-                ctx.body = returnValue;
+                ctx.body = returnValue || ctx.body;
                 // @todo add location?
               } catch (error) {
                 ctx.status = 500;
+                ctx.body = error.message;
+              }
+              if (path && path.indexOf("*") >= 0) {
+                await next();
               }
             });
           } else if (factory.operation === "read") {
-            coreRouter.get(route.url, async (ctx) => {
+            coreRouter.get(route.url, async (ctx, next) => {
+              const path: string = route.url;
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
               const resultProps = core.renderDataParams(mergedProps, factory.targetName, factory.targetProperty);
               // execute function from dataFactory
-              const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
-              ctx.body = returnValue;
-              if (factory.resultType) {
-                ctx.type = factory.resultType;
+              try {
+                const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
+                ctx.status = 200;
+                ctx.body = returnValue || ctx.body;
+                if (factory.resultType) {
+                  ctx.type = factory.resultType;
+                }
+              } catch (error) {
+                ctx.status = 500;
+                ctx.body = error.message;
+              }
+              if (path && path.indexOf("*") >= 0) {
+                await next();
               }
             });
           } else if (factory.operation === "delete") {
-            coreRouter.delete(route.url, async (ctx) => {
+            coreRouter.delete(route.url, async (ctx, next) => {
+              const path: string = route.url;
               const mergedProps = Object.assign({}, ctx.query, ctx.params);
               mergedProps.request = ctx.request;
               mergedProps.body = ctx.request.body;
@@ -231,9 +257,13 @@ export class MlclHttp {
               try {
                 const returnValue = await factoryClassInstance[factory.targetProperty](...resultProps);
                 ctx.status = 204;
-                ctx.body = returnValue;
+                ctx.body = returnValue || ctx.body;
               } catch (error) {
                 ctx.status = 500;
+                ctx.body = error.message;
+              }
+              if (path && path.indexOf("*") >= 0) {
+                await next();
               }
             });
           }
