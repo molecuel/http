@@ -51,13 +51,16 @@ describe("MlclCoreBootStrap", () => {
         new MlclDataParam("request.headers.preRoute", "preRoute", "boolean"),
       ])
       @dataRead()
-      public async dataReadeTest2(perms?, params?) {
+      public async dataReadeTest2(perms?, params?, preRoute?) {
         const result: any = {};
         if (perms) {
           result.perms = perms;
         }
         if (params) {
           result.params = params;
+        }
+        if (preRoute) {
+          result.preRoute = preRoute;
         }
         return result;
       }
