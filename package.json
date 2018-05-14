@@ -1,6 +1,6 @@
 {
   "name": "@molecuel/http",
-  "version": "2.0.0-beta7",
+  "version": "2.0.0-beta8",
   "description": "HTTP module for molecuel Application framework",
   "main": "lib/index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "coveralls": "^3.0.1",
     "del": "^3.0.0",
     "gh-pages": "^1.0.0",
-    "istanbul": "^0.4.5",
+    "istanbul": "v1.0.0-alpha.2",
     "mocha": ">=5.1.1",
     "mocha-lcov-reporter": "^1.2.0",
     "publish": "^0.6.0",
