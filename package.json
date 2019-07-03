@@ -28,7 +28,7 @@
     "@types/koa": "^2.0.39",
     "@types/koa-router": "^7.0.22",
     "@types/mocha": "^5.2.0",
-    "@types/supertest": "^2.0.0",
+    "@types/supertest": "^2.0.8",
     "@types/when": "^2.4.28",
     "assert": ">=0.0.1",
     "coveralls": "^3.0.1",
