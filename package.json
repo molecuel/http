@@ -50,7 +50,7 @@
     "@molecuel/di": "^0.2.0",
     "@reactivex/rxjs": "^5.4.3",
     "inflation": "^2.0.0",
-    "koa": "2.3.0",
+    "koa": "2.8.2",
     "koa-router": "^7.4.0",
     "raw-body": "^2.2.0",
     "reflect-metadata": "^0.1.3"
