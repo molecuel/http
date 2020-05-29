@@ -33,7 +33,7 @@
     "assert": ">=0.0.1",
     "coveralls": "^3.0.1",
     "del": "^3.0.0",
-    "gh-pages": "^1.0.0",
+    "gh-pages": "^3.0.0",
     "istanbul": "v1.0.0-alpha.2",
     "mocha": ">=5.1.1",
     "mocha-lcov-reporter": "^1.2.0",
